@@ -377,6 +377,16 @@
 	}
 }
 
+/* printing  */
+@media print {
+
+	 #docs-sidebar {
+		 display: none !important;
+	 }
+
+}
+
+
 // Small devices (landscape phones, 576px and up)
 @media (min-width: 576px) {  }
 
