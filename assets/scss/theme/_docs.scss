@@ -2,6 +2,8 @@
 	max-width: 600px;
 }
 
+
+
 .docs-overview {
 	.card {
 		border-color: $theme-divider;
@@ -101,7 +103,6 @@
     position: relative;
     top: 0.3rem;
     background: none;
-    
     &:focus {
 	    outline: none;
     }
@@ -195,6 +196,17 @@
 				}
 			}
 		}
+		&.active .nav-link{
+			color: $theme-color-primary;
+			&:before {
+				background-color: $theme-color-primary;
+				
+			}
+			.theme-icon-holder {
+				color: #fff;
+				background: $theme-color-primary;
+			}
+		}
 	}
 	.nav-link {
 		display: inline-block;
@@ -242,6 +254,8 @@
 .docs-article {
 	padding: 2rem;
 	color: $theme-text-color-secondary;
+	scroll-margin-top: 69px; //height of the sticky header
+	scroll-snap-margin-top: 69px; //Safari 
 	strong {
 		color: $theme-text-color-primary;
 	}
@@ -264,6 +278,8 @@
 	.docs-section {
 		padding: 2rem 0;
 		border-bottom: 1px solid $theme-divider;
+		scroll-margin-top: 69px; //height of the sticky header
+		scroll-snap-margin-top: 69px; //Safari 
 		p {
 			&:last-child {
 				margin-bottom: 0;
@@ -368,16 +384,14 @@
 	}
 }
 
-
 .cta-section {
 	.container {
 		position: relative;
 		z-index: 10;
 	}
-	.section-intro {
-		font-size: 1.125rem;
-	}
+	
 }
+
 
 /* printing  */
 @media print {
@@ -387,6 +401,7 @@
 	 }
 
 }
+
 
 
 // Small devices (landscape phones, 576px and up)

@@ -71,6 +71,14 @@ a.theme-link {
     }
 }
 
+a.text-link {
+	text-decoration: none;
+	
+	&:hover {
+		text-decoration: underline;
+	}
+}
+
 .btn {
 	font-weight: 600;
 	padding: 0.6rem 1.25rem;
@@ -79,6 +87,7 @@ a.theme-link {
 	&:hover, &:active, &:focus {
 		box-shadow: 0 5px 15px 0 rgba(0,0,0,0.15);
 		box-shadow: 0 12px 24px -6px rgba(0,0,0,0.15);
+		text-decoration:none;
 	}
 }
 
@@ -88,6 +97,10 @@ a.theme-link {
 
 .btn-primary {
    background: $theme-color-primary;
+   color: #fff;
+   &:hover, &:focus, &:active {
+	   color: #fff;
+   }
 }
 
 .btn-secondary {
@@ -288,6 +301,15 @@ a.theme-link {
 	@include box-shadow(0 1px 4px 0 rgba(0,0,0,.1));
 	background: #fff;
 }
+
+
+.btn-success, .btn-warning, .btn-info, .btn-danger {
+	color: #fff;
+	&:hover, &:focus, &:active {
+		color: #fff;
+	}
+}
+
 
 /* Footer */
 .footer {

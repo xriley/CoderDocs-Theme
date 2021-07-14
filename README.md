@@ -1,8 +1,8 @@
-<a href="https://themes.3rdwavemedia.com/bootstrap-templates/startup/coderdocs-free-bootstrap-4-documentation-template-for-software-projects/" target="_blank"><img src="https://themes.3rdwavemedia.com/wp-content/uploads/2019/06/Bootstrap-Documentation-Template-CoderDocs-Pormo.jpg" alt="Bootstrap 4 Documentation Template for Software Projects" /></a>
+<a href="https://themes.3rdwavemedia.com/bootstrap-templates/startup/coderdocs-free-bootstrap-5-documentation-template-for-software-projects/" target="_blank"><img src="https://themes.3rdwavemedia.com/wp-content/uploads/2021/07/Bootstrap-Documentation-Template-CoderDocs-Promo.png" alt="Bootstrap 5 Documentation Template CoderDocs" /></a>
 
 ## Theme Details & Demo
 
-**Demo:** https://themes.3rdwavemedia.com/bootstrap-templates/startup/coderdocs-free-bootstrap-4-documentation-template-for-software-projects/
+**Demo:** https://themes.3rdwavemedia.com/bootstrap-templates/startup/coderdocs-free-bootstrap-5-documentation-template-for-software-projects/
 
 CoderDocs is a **free Bootstrap documentation template** made for software developers.
 
@@ -28,16 +28,16 @@ If you'd like to **use the template without the attribution link**, you can [buy
 
 
 ## Latest Version
-**v1.2** - 10 Oct 2020
+**Bootstrap 5 v1.0** - 2021-07-14
 
-[Changelog](https://themes.3rdwavemedia.com/bootstrap-templates/startup/coderdocs-free-bootstrap-4-documentation-template-for-software-projects/?target=changelog)
+[Changelog](https://themes.3rdwavemedia.com/bootstrap-templates/startup/coderdocs-free-bootstrap-5-documentation-template-for-software-projects/?target=changelog)
 
 
 ## Features
 
 -  Fully Responsive
 -  HTML5 + CSS3
--  Built on Bootstrap 4
+-  Built on Bootstrap 5
 -  **SCSS** source files included
 -  1500+ FontAwesome 5 icons
 -  Compatible with all modern browsers

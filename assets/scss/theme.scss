@@ -48,14 +48,14 @@ $gray-700: lighten($theme-text-color-secondary, 20%);
 $gray-800: lighten($theme-text-color-secondary, 10%);
 $gray-900: $theme-text-color-primary;
 
-$theme-colors: (
-  "primary":  $theme-color-primary, 
-  "secondary": $theme-text-color-secondary, 
-  "success": $theme-success-color,
-  "danger": $theme-danger-color,
-  "warning": $theme-warning-color,
-  "info": $theme-info-color,
-);
+
+/* Override BS5 sass color */
+$primary: $theme-color-primary;
+$secondary: $theme-text-color-secondary;
+$success: $theme-success-color;
+$danger: $theme-danger-color;
+$warning: $theme-warning-color;
+$info: $theme-info-color;
 
 /*************************** Import Bootstrap  *****************************/
 @import "bootstrap/scss/bootstrap.scss";

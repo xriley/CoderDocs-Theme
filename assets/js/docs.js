@@ -1,74 +1,105 @@
+"use strict";
 
-$(window).on('load resize', function() {
-   
-    //Add/remove class based on browser size when load/resize
-    var w = $(window).width();
 
+/* ====== Define JS Constants ====== */
+const sidebarToggler = document.getElementById('docs-sidebar-toggler');
+const sidebar = document.getElementById('docs-sidebar');
+const sidebarLinks = document.querySelectorAll('#docs-sidebar .scrollto');
+
+
+
+/* ===== Responsive Sidebar ====== */
+
+window.onload=function() 
+{ 
+    responsiveSidebar(); 
+};
+
+window.onresize=function() 
+{ 
+    responsiveSidebar(); 
+};
+
+
+function responsiveSidebar() {
+    let w = window.innerWidth;
 	if(w >= 1200) {
 	    // if larger 
-	    $('#docs-sidebar').addClass('sidebar-visible').removeClass('sidebar-hidden');
+	    console.log('larger');
+		sidebar.classList.remove('sidebar-hidden');
+		sidebar.classList.add('sidebar-visible');
+		
 	} else {
 	    // if smaller
-	    $('#docs-sidebar').addClass('sidebar-hidden').removeClass('sidebar-visible');
+	    console.log('smaller');
+	    sidebar.classList.remove('sidebar-visible');
+		sidebar.classList.add('sidebar-hidden');
+	}
+};
+
+sidebarToggler.addEventListener('click', () => {
+	if (sidebar.classList.contains('sidebar-visible')) {
+		console.log('visible');
+		sidebar.classList.remove('sidebar-visible');
+		sidebar.classList.add('sidebar-hidden');
+		
+	} else {
+		console.log('hidden');
+		sidebar.classList.remove('sidebar-hidden');
+		sidebar.classList.add('sidebar-visible');
 	}
 });
 
 
-$(document).ready(function() {
-	
-	/* ====== Toggle Sidebar ======= */
-	
-	$('#docs-sidebar-toggler').on('click', function(){
-	
-		if ( $('#docs-sidebar').hasClass('sidebar-visible') ) {
+/* ===== Smooth scrolling ====== */
+/*  Note: You need to include smoothscroll.min.js (smooth scroll behavior polyfill) on the page to cover some browsers */
+/* Ref: https://github.com/iamdustan/smoothscroll */
 
-			  $("#docs-sidebar").removeClass('sidebar-visible').addClass('sidebar-hidden');
+sidebarLinks.forEach((sidebarLink) => {
+	
+	sidebarLink.addEventListener('click', (e) => {
+		
+		e.preventDefault();
+		
+		var target = sidebarLink.getAttribute("href").replace('#', '');
+		
+		//console.log(target);
+		
+        document.getElementById(target).scrollIntoView({ behavior: 'smooth' });
+        
+        
+        //Collapse sidebar after clicking
+		if (sidebar.classList.contains('sidebar-visible') && window.innerWidth < 1200){
 			
-			
-		} else {
-
-			  $("#docs-sidebar").removeClass('sidebar-hidden').addClass('sidebar-visible');
-			
-		}
-			
+			sidebar.classList.remove('sidebar-visible');
+		    sidebar.classList.add('sidebar-hidden');
+		} 
+		
     });
-    
-
-    /* ====== Activate scrollspy menu ===== */
-    $('body').scrollspy({target: '#docs-nav', offset: 100});
-    
-    
-    
-    /* ===== Smooth scrolling ====== */
-	$('#docs-sidebar a.scrollto').on('click', function(e){
-        //store hash
-        var target = this.hash;    
-        e.preventDefault();
-		$('body').scrollTo(target, 800, {offset: -69, 'axis':'y'});
-		
-		//Collapse sidebar after clicking
-		if ($('#docs-sidebar').hasClass('sidebar-visible') && $(window).width() < 1200){
-			$('#docs-sidebar').removeClass('sidebar-visible').addClass('slidebar-hidden');
-		}
-		
-	});
 	
-	/* wmooth scrolling on page load if URL has a hash */
-	if(window.location.hash) {
-		var urlhash = window.location.hash;
-		$('body').scrollTo(urlhash, 800, {offset: -69, 'axis':'y'});
-	}
-	
-	
-	/* Bootstrap lightbox */
-    /* Ref: http://ashleydw.github.io/lightbox/ */
-
-    $(document).delegate('*[data-toggle="lightbox"]', 'click', function(e) {
-        e.preventDefault();
-        $(this).ekkoLightbox();
-    }); 
-
-    
-    
-
 });
+
+
+/* ===== Gumshoe SrollSpy ===== */
+/* Ref: https://github.com/cferdinandi/gumshoe  */
+// Initialize Gumshoe
+var spy = new Gumshoe('#docs-nav a', {
+	offset: 69 //sticky header height
+});
+
+
+/* ====== SimpleLightbox Plugin ======= */
+/*  Ref: https://github.com/andreknieriem/simplelightbox */
+
+var lightbox = new SimpleLightbox('.simplelightbox-gallery a', {/* options */});
+
+
+
+
+
+
+
+
+
+
+
