@@ -28,7 +28,7 @@ If you'd like to **use the template without the attribution link**, you can [buy
 
 
 ## Latest Version
-**Bootstrap 5 v1.0** - 2021-07-14
+**Bootstrap 5 v2.0** - 2022-05-24
 
 [Changelog](https://themes.3rdwavemedia.com/bootstrap-templates/startup/coderdocs-free-bootstrap-5-documentation-template-for-software-projects/?target=changelog)
 
@@ -39,7 +39,7 @@ If you'd like to **use the template without the attribution link**, you can [buy
 -  HTML5 + CSS3
 -  Built on Bootstrap 5
 -  **SCSS** source files included
--  1500+ FontAwesome 5 icons
+-  FontAwesome 6 icons
 -  Compatible with all modern browsers
 
 ## Credits

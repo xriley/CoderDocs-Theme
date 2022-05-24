@@ -82,12 +82,13 @@ a.text-link {
 .btn {
 	font-weight: 600;
 	padding: 0.6rem 1.25rem;
-	@include transition (all 0.4s ease-in-out);
 	border: none;
 	&:hover, &:active, &:focus {
 		box-shadow: 0 5px 15px 0 rgba(0,0,0,0.15);
 		box-shadow: 0 12px 24px -6px rgba(0,0,0,0.15);
 		text-decoration:none;
+		outline: none;
+		@include transition (all 0.4s ease-in-out);
 	}
 }
 

@@ -2,7 +2,7 @@
 	By André Rinas, www.andrerinas.de
 	Documentation, www.simplelightbox.de
 	Available for use under the MIT License
-	Version 2.7.0
+	Version 2.10.3
 */
 "use strict";
 
@@ -11,7 +11,9 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports["default"] = void 0;
 
-function _createForOfIteratorHelper(o, allowArrayLike) { var it; if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = o[Symbol.iterator](); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
 
 function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
 
@@ -34,6 +36,7 @@ var SimpleLightbox = /*#__PURE__*/function () {
     _defineProperty(this, "defaultOptions", {
       sourceAttr: 'href',
       overlay: true,
+      overlayOpacity: 0.7,
       spinner: true,
       nav: true,
       navText: ['&lsaquo;', '&rsaquo;'],
@@ -75,14 +78,20 @@ var SimpleLightbox = /*#__PURE__*/function () {
       fixedClass: 'sl-fixed',
       fadeSpeed: 300,
       uniqueImages: true,
-      focus: true
+      focus: true,
+      scrollZoom: true,
+      scrollZoomFactor: 0.5
     });
 
     _defineProperty(this, "transitionPrefix", void 0);
 
+    _defineProperty(this, "isPassiveEventsSupported", void 0);
+
     _defineProperty(this, "transitionCapable", false);
 
     _defineProperty(this, "isTouchDevice", 'ontouchstart' in window);
+
+    _defineProperty(this, "isAppleDevice", /(Mac|iPhone|iPod|iPad)/i.test(navigator.platform));
 
     _defineProperty(this, "initialLocationHash", void 0);
 
@@ -164,6 +173,7 @@ var SimpleLightbox = /*#__PURE__*/function () {
     });
 
     this.options = Object.assign(this.defaultOptions, options);
+    this.isPassiveEventsSupported = this.checkPassiveEventsSupport();
 
     if (typeof elements === 'string') {
       this.initialSelector = elements;
@@ -234,7 +244,7 @@ var SimpleLightbox = /*#__PURE__*/function () {
 
     if (this.options.disableRightClick) {
       this.addEventListener(document.body, 'contextmenu.' + this.eventNamespace, function (event) {
-        if (event.target.classList.contains('sl-overlay')) {
+        if (event.target.parentElement.classList.contains("sl-image")) {
           event.preventDefault();
         }
       });
@@ -270,11 +280,30 @@ var SimpleLightbox = /*#__PURE__*/function () {
   }
 
   _createClass(SimpleLightbox, [{
+    key: "checkPassiveEventsSupport",
+    value: function checkPassiveEventsSupport() {
+      // https://github.com/WICG/EventListenerOptions/blob/gh-pages/explainer.md#feature-detection
+      // Test via a getter in the options object to see if the passive property is accessed
+      var supportsPassive = false;
+
+      try {
+        var opts = Object.defineProperty({}, 'passive', {
+          get: function get() {
+            supportsPassive = true;
+          }
+        });
+        window.addEventListener("testPassive", null, opts);
+        window.removeEventListener("testPassive", null, opts);
+      } catch (e) {}
+
+      return supportsPassive;
+    }
+  }, {
     key: "createDomNodes",
     value: function createDomNodes() {
       this.domNodes.overlay = document.createElement('div');
       this.domNodes.overlay.classList.add('sl-overlay');
-      this.domNodes.overlay.dataset.opacityTarget = ".7";
+      this.domNodes.overlay.dataset.opacityTarget = this.options.overlayOpacity;
       this.domNodes.closeButton = document.createElement('button');
       this.domNodes.closeButton.classList.add('sl-close');
       this.domNodes.closeButton.innerHTML = this.options.closeText;
@@ -327,7 +356,7 @@ var SimpleLightbox = /*#__PURE__*/function () {
   }, {
     key: "isValidLink",
     value: function isValidLink(element) {
-      return !this.options.fileExt || 'pathname' in element && new RegExp('(' + this.options.fileExt + ')$', 'i').test(element.pathname);
+      return !this.options.fileExt || element.getAttribute(this.options.sourceAttr) && new RegExp('(' + this.options.fileExt + ')$', 'i').test(element.getAttribute(this.options.sourceAttr));
     }
   }, {
     key: "calculateTransitionPrefix",
@@ -349,7 +378,7 @@ var SimpleLightbox = /*#__PURE__*/function () {
           fullWindowWidth = documentElementRect.right - Math.abs(documentElementRect.left);
         }
 
-        if (document.body.clientWidth < fullWindowWidth) {
+        if (document.body.clientWidth < fullWindowWidth || this.isAppleDevice) {
           var scrollDiv = document.createElement('div'),
               paddingRight = parseInt(document.body.style.paddingRight || 0, 10);
           scrollDiv.classList.add('sl-scrollbar-measure');
@@ -358,7 +387,7 @@ var SimpleLightbox = /*#__PURE__*/function () {
           document.body.removeChild(scrollDiv);
           document.body.dataset.originalPaddingRight = paddingRight;
 
-          if (scrollbarWidth > 0) {
+          if (scrollbarWidth > 0 || scrollbarWidth == 0 && this.isAppleDevice) {
             document.body.classList.add('hidden-scroll');
             document.body.style.paddingRight = paddingRight + scrollbarWidth + 'px';
             fixedElements.forEach(function (element) {
@@ -405,7 +434,8 @@ var SimpleLightbox = /*#__PURE__*/function () {
       }
 
       this.removeEventListener(document, 'focusin.' + this.eventNamespace);
-      this.fadeOut(document.querySelectorAll('.sl-image img, .sl-overlay, .sl-close, .sl-navigation, .sl-image .sl-caption, .sl-counter'), this.options.fadeSpeed, function () {
+      this.fadeOut(this.domNodes.overlay, this.options.fadeSpeed);
+      this.fadeOut(document.querySelectorAll('.sl-image img,  .sl-close, .sl-navigation, .sl-image .sl-caption, .sl-counter'), this.options.fadeSpeed, function () {
         if (_this2.options.disableScroll) {
           _this2.toggleScrollbar('show');
         }
@@ -433,6 +463,11 @@ var SimpleLightbox = /*#__PURE__*/function () {
       this.controlCoordinates.capture = false;
       this.controlCoordinates.initialScale = this.minMax(1, 1, this.options.maxZoom);
       this.controlCoordinates.doubleTapped = false;
+    }
+  }, {
+    key: "hash",
+    get: function get() {
+      return window.location.hash.substring(1);
     }
   }, {
     key: "preload",
@@ -540,7 +575,7 @@ var SimpleLightbox = /*#__PURE__*/function () {
         _this5.relatedElements[_this5.currentImageIndex].dispatchEvent(new Event('error.' + _this5.eventNamespace));
 
         _this5.isAnimating = false;
-        _this5.isOpen = false;
+        _this5.isOpen = true;
         _this5.domNodes.spinner.style.display = 'none';
         var dirIsDefined = direction === 1 || direction === -1;
 
@@ -630,12 +665,12 @@ var SimpleLightbox = /*#__PURE__*/function () {
           if (_this5.currentImageIndex < _this5.relatedElements.length - 1) {
             _this5.show(_this5.domNodes.navigation.querySelector('.sl-next'));
           }
-        }
-
-        if (_this5.relatedElements.length === 1) {
-          _this5.hide(_this5.domNodes.navigation.querySelectorAll('.sl-prev, .sl-next'));
         } else {
-          _this5.show(_this5.domNodes.navigation.querySelectorAll('.sl-prev, .sl-next'));
+          if (_this5.relatedElements.length === 1) {
+            _this5.hide(_this5.domNodes.navigation.querySelectorAll('.sl-prev, .sl-next'));
+          } else {
+            _this5.show(_this5.domNodes.navigation.querySelectorAll('.sl-prev, .sl-next'));
+          }
         }
 
         if (direction === 1 || direction === -1) {
@@ -728,12 +763,88 @@ var SimpleLightbox = /*#__PURE__*/function () {
 
         _this6.loadImage(event.currentTarget.classList.contains('sl-next') ? 1 : -1);
       });
+
+      if (this.options.scrollZoom) {
+        var scale = 1;
+        this.addEventListener(this.domNodes.image, ['mousewheel', 'DOMMouseScroll'], function (event) {
+          if (_this6.controlCoordinates.mousedown || _this6.isAnimating || _this6.isClosing || !_this6.isOpen) {
+            return true;
+          }
+
+          if (_this6.controlCoordinates.containerHeight == 0) {
+            _this6.controlCoordinates.containerHeight = _this6.getDimensions(_this6.domNodes.image).height;
+            _this6.controlCoordinates.containerWidth = _this6.getDimensions(_this6.domNodes.image).width;
+            _this6.controlCoordinates.imgHeight = _this6.getDimensions(_this6.currentImage).height;
+            _this6.controlCoordinates.imgWidth = _this6.getDimensions(_this6.currentImage).width;
+            _this6.controlCoordinates.containerOffsetX = _this6.domNodes.image.offsetLeft;
+            _this6.controlCoordinates.containerOffsetY = _this6.domNodes.image.offsetTop;
+            _this6.controlCoordinates.initialOffsetX = parseFloat(_this6.currentImage.dataset.translateX);
+            _this6.controlCoordinates.initialOffsetY = parseFloat(_this6.currentImage.dataset.translateY);
+          }
+
+          event.preventDefault();
+          var delta = event.delta || event.wheelDelta;
+
+          if (delta === undefined) {
+            //we are on firefox
+            delta = event.detail;
+          }
+
+          delta = Math.max(-1, Math.min(1, delta)); // cap the delta to [-1,1] for cross browser consistency
+          // apply zoom
+
+          scale += delta * _this6.options.scrollZoomFactor * scale;
+          scale = Math.max(1, Math.min(_this6.options.maxZoom, scale));
+          _this6.controlCoordinates.targetScale = scale;
+          var scrollTopPos = document.documentElement.scrollTop || document.body.scrollTop;
+          _this6.controlCoordinates.pinchOffsetX = event.pageX;
+          _this6.controlCoordinates.pinchOffsetY = event.pageY - scrollTopPos || 0; // need to substract the scroll position
+
+          _this6.controlCoordinates.limitOffsetX = (_this6.controlCoordinates.imgWidth * _this6.controlCoordinates.targetScale - _this6.controlCoordinates.containerWidth) / 2;
+          _this6.controlCoordinates.limitOffsetY = (_this6.controlCoordinates.imgHeight * _this6.controlCoordinates.targetScale - _this6.controlCoordinates.containerHeight) / 2;
+          _this6.controlCoordinates.scaleDifference = _this6.controlCoordinates.targetScale - _this6.controlCoordinates.initialScale;
+          _this6.controlCoordinates.targetOffsetX = _this6.controlCoordinates.imgWidth * _this6.controlCoordinates.targetScale <= _this6.controlCoordinates.containerWidth ? 0 : _this6.minMax(_this6.controlCoordinates.initialOffsetX - (_this6.controlCoordinates.pinchOffsetX - _this6.controlCoordinates.containerOffsetX - _this6.controlCoordinates.containerWidth / 2 - _this6.controlCoordinates.initialOffsetX) / (_this6.controlCoordinates.targetScale - _this6.controlCoordinates.scaleDifference) * _this6.controlCoordinates.scaleDifference, _this6.controlCoordinates.limitOffsetX * -1, _this6.controlCoordinates.limitOffsetX);
+          _this6.controlCoordinates.targetOffsetY = _this6.controlCoordinates.imgHeight * _this6.controlCoordinates.targetScale <= _this6.controlCoordinates.containerHeight ? 0 : _this6.minMax(_this6.controlCoordinates.initialOffsetY - (_this6.controlCoordinates.pinchOffsetY - _this6.controlCoordinates.containerOffsetY - _this6.controlCoordinates.containerHeight / 2 - _this6.controlCoordinates.initialOffsetY) / (_this6.controlCoordinates.targetScale - _this6.controlCoordinates.scaleDifference) * _this6.controlCoordinates.scaleDifference, _this6.controlCoordinates.limitOffsetY * -1, _this6.controlCoordinates.limitOffsetY);
+
+          _this6.zoomPanElement(_this6.controlCoordinates.targetOffsetX + "px", _this6.controlCoordinates.targetOffsetY + "px", _this6.controlCoordinates.targetScale);
+
+          if (_this6.controlCoordinates.targetScale > 1) {
+            _this6.controlCoordinates.zoomed = true;
+
+            if ((!_this6.domNodes.caption.style.opacity || _this6.domNodes.caption.style.opacity > 0) && _this6.domNodes.caption.style.display !== 'none') {
+              _this6.fadeOut(_this6.domNodes.caption, _this6.options.fadeSpeed);
+            }
+          } else {
+            if (_this6.controlCoordinates.initialScale === 1) {
+              _this6.controlCoordinates.zoomed = false;
+
+              if (_this6.domNodes.caption.style.display === 'none') {
+                _this6.fadeIn(_this6.domNodes.caption, _this6.options.fadeSpeed);
+              }
+            }
+
+            _this6.controlCoordinates.initialPinchDistance = null;
+            _this6.controlCoordinates.capture = false;
+          }
+
+          _this6.controlCoordinates.initialPinchDistance = _this6.controlCoordinates.targetPinchDistance;
+          _this6.controlCoordinates.initialScale = _this6.controlCoordinates.targetScale;
+          _this6.controlCoordinates.initialOffsetX = _this6.controlCoordinates.targetOffsetX;
+          _this6.controlCoordinates.initialOffsetY = _this6.controlCoordinates.targetOffsetY;
+
+          _this6.setZoomData(_this6.controlCoordinates.targetScale, _this6.controlCoordinates.targetOffsetX, _this6.controlCoordinates.targetOffsetY);
+
+          _this6.zoomPanElement(_this6.controlCoordinates.targetOffsetX + "px", _this6.controlCoordinates.targetOffsetY + "px", _this6.controlCoordinates.targetScale);
+        });
+      }
+
       this.addEventListener(this.domNodes.image, ['touchstart.' + this.eventNamespace, 'mousedown.' + this.eventNamespace], function (event) {
         if (event.target.tagName === 'A' && event.type === 'touchstart') {
           return true;
         }
 
         if (event.type === 'mousedown') {
+          event.preventDefault();
           _this6.controlCoordinates.initialPointerOffsetX = event.clientX;
           _this6.controlCoordinates.initialPointerOffsetY = event.clientY;
           _this6.controlCoordinates.containerHeight = _this6.getDimensions(_this6.domNodes.image).height;
@@ -774,7 +885,7 @@ var SimpleLightbox = /*#__PURE__*/function () {
 
                   _this6.zoomPanElement(0 + "px", 0 + "px", _this6.controlCoordinates.initialScale);
 
-                  if (!_this6.domNodes.caption.style.opacity && _this6.domNodes.caption.style.display !== 'none') {
+                  if ((!_this6.domNodes.caption.style.opacity || _this6.domNodes.caption.style.opacity > 0) && _this6.domNodes.caption.style.display !== 'none') {
                     _this6.fadeOut(_this6.domNodes.caption, _this6.options.fadeSpeed);
                   }
 
@@ -832,8 +943,6 @@ var SimpleLightbox = /*#__PURE__*/function () {
           return true;
         }
 
-        event.preventDefault();
-
         if (event.type === 'touchmove') {
           if (_this6.controlCoordinates.capture === false) {
             return false;
@@ -869,7 +978,7 @@ var SimpleLightbox = /*#__PURE__*/function () {
                 if (_this6.controlCoordinates.targetScale > 1) {
                   _this6.controlCoordinates.zoomed = true;
 
-                  if (!_this6.domNodes.caption.style.opacity && _this6.domNodes.caption.style.display !== 'none') {
+                  if ((!_this6.domNodes.caption.style.opacity || _this6.domNodes.caption.style.opacity > 0) && _this6.domNodes.caption.style.display !== 'none') {
                     _this6.fadeOut(_this6.domNodes.caption, _this6.options.fadeSpeed);
                   }
                 }
@@ -906,6 +1015,7 @@ var SimpleLightbox = /*#__PURE__*/function () {
 
         if (event.type === 'mousemove' && _this6.controlCoordinates.mousedown) {
           if (event.type == 'touchmove') return true;
+          event.preventDefault();
           if (_this6.controlCoordinates.capture === false) return false;
           _this6.controlCoordinates.pointerOffsetX = event.clientX;
           _this6.controlCoordinates.pointerOffsetY = event.clientY;
@@ -1020,7 +1130,7 @@ var SimpleLightbox = /*#__PURE__*/function () {
 
           _this6.zoomPanElement(0 + "px", 0 + "px", _this6.controlCoordinates.initialScale);
 
-          if (!_this6.domNodes.caption.style.opacity && _this6.domNodes.caption.style.display !== 'none') {
+          if ((!_this6.domNodes.caption.style.opacity || _this6.domNodes.caption.style.opacity > 0) && _this6.domNodes.caption.style.display !== 'none') {
             _this6.fadeOut(_this6.domNodes.caption, _this6.options.fadeSpeed);
           }
 
@@ -1042,6 +1152,8 @@ var SimpleLightbox = /*#__PURE__*/function () {
         setTimeout(function () {
           if (_this6.currentImage) {
             _this6.currentImage.classList.remove('sl-transition');
+
+            _this6.currentImage.style[_this6.transitionPrefix + 'transform-origin'] = null;
           }
         }, 200);
         _this6.controlCoordinates.capture = true;
@@ -1263,6 +1375,18 @@ var SimpleLightbox = /*#__PURE__*/function () {
             for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
               var event = _step2.value;
               var options = opts || false;
+              var needsPassiveFix = ['touchstart', 'touchmove'].indexOf(event.split('.')[0]) >= 0;
+
+              if (needsPassiveFix && this.isPassiveEventsSupported) {
+                if (_typeof(options) === 'object') {
+                  options.passive = true;
+                } else {
+                  options = {
+                    passive: true
+                  };
+                }
+              }
+
               element.namespaces[event] = callback;
               element.addEventListener(event.split('.')[0], callback, options);
             }
@@ -1328,7 +1452,7 @@ var SimpleLightbox = /*#__PURE__*/function () {
       try {
         for (_iterator5.s(); !(_step5 = _iterator5.n()).done;) {
           var element = _step5.value;
-          element.style.opacity = 1;
+          element.style.opacity = parseFloat(element) || window.getComputedStyle(element).getPropertyValue("opacity");
         }
       } catch (err) {
         _iterator5.e(err);
@@ -1349,8 +1473,9 @@ var SimpleLightbox = /*#__PURE__*/function () {
           try {
             for (_iterator6.s(); !(_step6 = _iterator6.n()).done;) {
               var element = _step6.value;
-              element.style.display = "none";
-              element.style.opacity = '';
+              element.style.display = "none"; // element.style.opacity = '';
+
+              element.style.opacity = 1;
             }
           } catch (err) {
             _iterator6.e(err);
@@ -1433,7 +1558,7 @@ var SimpleLightbox = /*#__PURE__*/function () {
           try {
             for (_iterator10.s(); !(_step10 = _iterator10.n()).done;) {
               var _element2 = _step10.value;
-              _element2.style.opacity = '';
+              _element2.style.opacity = opacityTarget;
             }
           } catch (err) {
             _iterator10.e(err);
@@ -1458,7 +1583,11 @@ var SimpleLightbox = /*#__PURE__*/function () {
       try {
         for (_iterator11.s(); !(_step11 = _iterator11.n()).done;) {
           var element = _step11.value;
-          element.dataset.initialDisplay = element.style.display;
+
+          if (element.style.display != 'none') {
+            element.dataset.initialDisplay = element.style.display;
+          }
+
           element.style.display = 'none';
         }
       } catch (err) {
@@ -1592,6 +1721,16 @@ var SimpleLightbox = /*#__PURE__*/function () {
     key: "prev",
     value: function prev() {
       this.loadImage(-1);
+    } // get some useful data
+
+  }, {
+    key: "getLighboxData",
+    value: function getLighboxData() {
+      return {
+        currentImageIndex: this.currentImageIndex,
+        currentImage: this.currentImage,
+        globalScrollbarWidth: this.globalScrollbarWidth
+      };
     } //close is exposed anyways..
 
   }, {
@@ -1628,11 +1767,6 @@ var SimpleLightbox = /*#__PURE__*/function () {
       this.destroy();
       this.constructor(selector, options);
       return this;
-    }
-  }, {
-    key: "hash",
-    get: function get() {
-      return window.location.hash.substring(1);
     }
   }]);
 
