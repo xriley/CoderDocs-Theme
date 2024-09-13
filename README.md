@@ -1,4 +1,4 @@
-<a href="https://themes.3rdwavemedia.com/bootstrap-templates/startup/coderdocs-free-bootstrap-5-documentation-template-for-software-projects/" target="_blank"><img src="https://themes.3rdwavemedia.com/wp-content/uploads/2021/07/Bootstrap-Documentation-Template-CoderDocs-Promo.png" alt="Bootstrap 5 Documentation Template CoderDocs" /></a>
+<a href="https://themes.3rdwavemedia.com/bootstrap-templates/startup/coderdocs-free-bootstrap-5-documentation-template-for-software-projects/" target="_blank"><img src="https://themes.3rdwavemedia.com/wp-content/uploads/2021/07/Bootstrap-Documentation-Template-CoderDocs-Promo.png" alt="Bootstrap Documentation Template CoderDocs" /></a>
 
 ## Theme Details & Demo
 
@@ -11,7 +11,7 @@ CoderDocs is a **free Bootstrap documentation template** made for software devel
 This Bootstrap template is made by UX/UI designer [Xiaoying Riley](https://twitter.com/3rdwave_themes) for developers and is 100% FREE as long as you **keep the footer attribution link**. You do not have the rights to resell, sublicense or redistribute (even for free) the template on its own or as a separate attachment from any of your work.
 
 
-If you'd like to **use the template without the attribution link**, you can [buy the **commercial license** via the theme website](https://themes.3rdwavemedia.com/bootstrap-templates/startup/coderdocs-free-bootstrap-4-documentation-template-for-software-projects/)
+If you'd like to **use the template without the attribution link**, you can [buy the **commercial license** via the theme website](https://themes.3rdwavemedia.com/bootstrap-templates/product/coderdocs-free-bootstrap-5-documentation-template-for-software-projects/)
 
 
 #### Follow Xiaoying
@@ -28,7 +28,7 @@ If you'd like to **use the template without the attribution link**, you can [buy
 
 
 ## Latest Version
-**Bootstrap 5 v3.0** - 2023-06-23
+**Bootstrap 5 v3.1** - 2024-09-12
 
 [Changelog](https://themes.3rdwavemedia.com/bootstrap-templates/startup/coderdocs-free-bootstrap-5-documentation-template-for-software-projects/?target=changelog)
 
