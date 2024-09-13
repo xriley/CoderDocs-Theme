@@ -43,6 +43,10 @@ code {
 	border-color: lighten($theme-text-color-primary, 20%);
 }
 
+.table>:not(caption) th.theme-bg-light {
+	background: $theme-bg-light;
+}
+
 .popover {
 	border-color: darken($theme-bg-light, 5%);
 }
@@ -225,6 +229,13 @@ a.text-link {
 
 
 /*********** Theme Utilities **********/
+.alert-dark {
+	color: $theme-text-color-primary;
+}
+.alert-light {
+	color: $theme-text-color-secondary;
+	border-color: $theme-border-color;
+}
 
 .border-radius-0 {
 	@include border-radius(0);
